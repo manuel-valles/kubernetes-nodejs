@@ -5,24 +5,25 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/dev';
+const client = new MongoClient(mongoURL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+const { dbName } = client.s.options;
 
 const initMongo = async () => {
   console.log('Initialising MongoDB...');
-  return MongoClient.connect(
-    mongoURL,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    },
-    (err, client) => {
-      if (err) {
-        console.log('Error connecting to MongoDB, retrying in 1 second');
-        return setTimeout(() => initMongo(), 1000);
-      }
-      console.log('MongoDB initialised');
-      return client.db(client.s.options.dbName).collection('notes');
-    }
-  );
+  try {
+    await client.connect();
+    const database = client.db(dbName);
+    database.collection('notes');
+  } catch (error) {
+    console.log('Error connecting to MongoDB, retrying in 1 second');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await initMongo();
+  } finally {
+    await client.close();
+  }
 };
 
 const start = async () => {
