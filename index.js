@@ -1,6 +1,7 @@
 const path = require('path');
-const { MongoClient } = require('mongodb');
 const express = require('express');
+const { MongoClient } = require('mongodb');
+const multer = require('multer');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -15,16 +16,16 @@ const initMongo = async () => {
   console.log('Initialising MongoDB...');
   try {
     await client.connect();
-    const database = client.db(dbName);
-    database.collection('notes');
   } catch (error) {
     console.log('Error connecting to MongoDB, retrying in 1 second');
     await new Promise((resolve) => setTimeout(resolve, 1000));
     await initMongo();
-  } finally {
-    await client.close();
   }
+  return client.db(dbName).collection('notes');
 };
+
+const retrieveNotes = async (db) => (await db.find().toArray()).reverse();
+const saveNote = async (db, note) => db.insertOne(note);
 
 const start = async () => {
   const db = await initMongo();
@@ -37,7 +38,17 @@ const start = async () => {
     console.log(`App listening on http://localhost:${port}`);
   });
 
-  app.get('/', async (req, res) => res.render('index', { notes: [] }));
+  app.get('/', async (req, res) =>
+    res.render('index', { notes: await retrieveNotes(db) })
+  );
+
+  // The name 'image' must match with the name of the file in 'index.pug': <type="file" name="image">
+  app.post('/note', multer().single('image'), async (req, res) => {
+    if (!req.body.upload && req.body.description) {
+      await saveNote(db, { description: req.body.description });
+      res.redirect('/');
+    }
+  });
 };
 
 start();
