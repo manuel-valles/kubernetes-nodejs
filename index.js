@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const { MongoClient } = require('mongodb');
 const multer = require('multer');
+const marked = require('marked');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -24,7 +25,12 @@ const initMongo = async () => {
   return client.db(dbName).collection('notes');
 };
 
-const retrieveNotes = async (db) => (await db.find().toArray()).reverse();
+const retrieveNotes = async (db) =>
+  (await db.find().toArray()).reverse().map((note) => ({
+    ...note,
+    description: marked(note.description),
+  }));
+
 const saveNote = async (db, note) => db.insertOne(note);
 
 const start = async () => {

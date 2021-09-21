@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "express": "^4.17.1",
+    "marked": "^3.0.4",
     "mongodb": "^4.1.2",
     "multer": "^1.4.3",
     "pug": "^3.0.2"
@@ -37,5 +38,8 @@
   "bugs": {
     "url": "https://github.com/manukempo/kuberenetes-nodejs/issues"
   },
-  "homepage": "https://github.com/manukempo/kuberenetes-nodejs#readme"
+  "homepage": "https://github.com/manukempo/kuberenetes-nodejs#readme",
+  "engines": {
+    "node": ">=10.6.0"
+  }
 }

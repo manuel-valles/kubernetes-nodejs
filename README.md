@@ -17,9 +17,16 @@ An Express app deployed as a container in Kubernetes.
 3. MongoDB
    - [Server](https://docs.mongodb.com/guides/server/install/)
 
-## Creating notes
+## Creating and retrieving notes
 
 The form for creating notes is defined in the index.pug template. It handles both the creation of notes and uploading of pictures. You should use `Multer`, a middleware for multi-part form data, to handle the uploaded data.
 
 - `$ npm i multer`
 - [Multer npm](https://www.npmjs.com/package/multer)
+
+## Rendering Markdown to HTML
+
+The Markdown notes should be rendered to HTML so that you can read them properly formatted. `Marked` is an excellent engine for rendering Markdown to HTML.
+
+- `$ npm i marked`
+- [Marked npm](https://www.npmjs.com/package/marked)
