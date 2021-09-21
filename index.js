@@ -57,7 +57,6 @@ const start = async () => {
         await saveNote(db, { description: req.body.description });
         res.redirect('/');
       } else if (req.body.upload && req.file) {
-        console.log(222, req.file);
         const link = `/uploads/${encodeURIComponent(req.file.filename)}`;
         res.render('index', {
           content: `${req.body.description} ![${req.file.originalname}](${link})`,
