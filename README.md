@@ -30,3 +30,7 @@ The Markdown notes should be rendered to HTML so that you can read them properly
 
 - `$ npm i marked`
 - [Marked npm](https://www.npmjs.com/package/marked)
+
+## Uploading pictures
+
+When a user uploads a picture, the file should be saved on disk/app directory (e.g. `public/uploads`), and a link should be inserted in the text box.
